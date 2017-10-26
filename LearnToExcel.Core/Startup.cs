@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LearnToExcel.Core.Data;
 using LearnToExcel.Core.Models;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +41,15 @@ namespace LearnToExcel.Core
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
+            services.ConfigureApplicationCookie(options => {
+                options.Cookie.Name = "LearnToExcel_Cookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;                
+            }); 
             services.AddMvc();
             // Add Database Initializer
             services.AddTransient<IDbInitializer, DbInitializer>();
