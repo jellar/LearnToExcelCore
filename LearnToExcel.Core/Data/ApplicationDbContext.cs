@@ -21,5 +21,11 @@ namespace LearnToExcel.Core.Data
         }
 
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Parent> Parents { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<ContactType> ContactTypes { get; set; }
     }
 }

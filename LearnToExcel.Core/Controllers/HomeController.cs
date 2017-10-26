@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using LearnToExcel.Core.Models;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace LearnToExcel.Core.Controllers
 {
     [Authorize]
-    [Route("[controller]/[action]")]
     public class HomeController : Controller
     {
-        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
