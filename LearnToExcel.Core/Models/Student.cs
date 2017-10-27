@@ -18,7 +18,7 @@ namespace LearnToExcel.Core.Models
         [Display(Name = "Surname")]
         public string Surname { get; set; }
         public Gender Gender { get; set; }
-
+        public string FullName => $"{FirstName} {Surname}";
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [Display(Name = "Date of Birth")]
