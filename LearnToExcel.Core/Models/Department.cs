@@ -9,6 +9,7 @@ namespace LearnToExcel.Core.Models
 {
     public class Department
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DepartmentId { get; set; }
 
         [Required]
@@ -19,7 +20,10 @@ namespace LearnToExcel.Core.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
-        
+
+        public int? InstructorID { get; set; }
+
+        public Instructor Admnistrator { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
         public virtual ICollection<Student> Students { get; set; }
     }
