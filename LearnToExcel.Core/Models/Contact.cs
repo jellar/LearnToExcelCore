@@ -12,7 +12,6 @@ namespace LearnToExcel.Core.Models
         public string Name { get; set; }
 
         public int ContactTypeId { get; set; }
-
         public virtual ContactType ContactType { get; set; }
     }
 }

@@ -44,7 +44,8 @@ namespace LearnToExcel.Core.Models
 
         public bool IsActive { get; set; }
 
-
+        [Display(Name = "Monthly Payment Day")]
+        public int PaymentDay { get; set; }
 
         public ICollection<Enrollment> Enrollments { get; set; }
 

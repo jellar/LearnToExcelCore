@@ -8,9 +8,10 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css">
+        <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker.css" rel="stylesheet" />
+        <link href="~/lib/select2/dist/css/select2.css" rel="stylesheet" />
         <link rel="stylesheet" href="~/css/AdminLTE.min.css" />
         <link rel="stylesheet" href="~/css/skins/_all-skins.min.css"/>
-
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -37,7 +38,7 @@
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini"><b>A</b>LT</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>Admin</b>LTE</span>
+        <span class="logo-lg"><b>Learn</b>ToExcel</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -52,16 +53,18 @@
     <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        
+        @{
+            var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+        }
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">MAIN NAVIGATION</li>
-            <li>
-                <a href="#">
+            <li class="@NavPages.IndexNavClass(ViewContext)">
+                <a asp-controller="Home" asp-action="Index">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
-            <li class="treeview active">
+            <li class="treeview @(controllerName == "Admission" ? "active" : "")">
                 <a href="#" >
                     <i class="fa fa-files-o"></i>
                     <span>Admissions</span>
@@ -69,16 +72,23 @@
                         <span class="fa fa-angle-left pull-right"></span>
                     </span>
                 </a>
+               
                 <ul class="treeview-menu">
-                    <li class="@NavPages.NewAdmissionsNavClass(ViewContext)"><a asp-controller="Admission" asp-action="NewAdmissions">
-                        <i class="fa fa-circle-o"></i> New Admission
-                    </a></li>
-                    <li class="@NavPages.AdmittedAdmissionsNavClass(ViewContext)"><a asp-controller="Admission" asp-action="AdmittedAdmissions">
-                        <i class="fa fa-circle-o"></i> Admitted
-                    </a></li>
-                    <li class="@NavPages.PendingAdmissionsNavClass(ViewContext)"><a asp-controller="Admission" asp-action="PendingAdmissions">
-                        <i class="fa fa-circle-o"></i> Pending Admissions
-                    </a></li>
+                    <li class="@NavPages.NewAdmissionsNavClass(ViewContext)">
+                        <a asp-controller="Admission" asp-action="NewAdmissions">
+                            <i class="fa fa-circle-o"></i> New Admission - @controllerName
+                        </a>
+                    </li>
+                    <li class="@NavPages.AdmittedAdmissionsNavClass(ViewContext)">
+                        <a asp-controller="Admission" asp-action="AdmittedAdmissions">
+                            <i class="fa fa-circle-o"></i> Admitted
+                        </a>
+                    </li>
+                    <li class="@NavPages.PendingAdmissionsNavClass(ViewContext)">
+                        <a asp-controller="Admission" asp-action="PendingAdmissions">
+                            <i class="fa fa-circle-o"></i> Pending Admissions
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li>
@@ -134,10 +144,9 @@
     </div>
     <footer class="main-footer">
         <div class="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
+            <b>Version</b> 1.0.0
         </div>
-        <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-        reserved.
+        <strong>LearnToExcel &copy; @DateTime.Now.Year </strong>
     </footer>
 
     </div>
@@ -150,6 +159,8 @@
                 $.widget.bridge('uibutton', $.ui.button);
             </script>
             <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+            <script src="~/lib/select2/dist/js/select2.full.min.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
             <!-- AdminLTE App -->
             <script src="~/js/adminlte.min.js"></script>

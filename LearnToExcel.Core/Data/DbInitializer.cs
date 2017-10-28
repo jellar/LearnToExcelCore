@@ -55,7 +55,7 @@ namespace LearnToExcel.Core.Data
             await EnsureRoleAsync(studentRoleName);
 
             await CreateUserAsync("admin@learntoexcel.co.uk", "admin@learntoexcel.co.uk", adminRoleName);
-            
+            await CreateUserAsync("employee@learntoexcel.co.uk", "employee@learntoexcel.co.uk", employeeRoleName);
 
             if (_context.Courses.Any())
             {
@@ -72,12 +72,29 @@ namespace LearnToExcel.Core.Data
             {
                 _context.Courses.Add(couse);
             }
+            // await _context.SaveChangesAsync();
+
+            if (_context.ContactTypes.Any())
+            {
+                return;
+            }
+            var contactTypes = new[]
+            {
+                new ContactType() {Id = 1, Code = "PRIMARY_CONTACT", Type = "Mother Phone"},
+                new ContactType() {Id = 2, Code = "SECONDARY_CONTACT", Type = "Father Phone"},
+                new ContactType() {Id = 3, Code = "EMAIL", Type = "Parent Email"},
+            };
+
+            foreach (var contactType in contactTypes)
+            {
+                _context.ContactTypes.Add(contactType);
+            }
             await _context.SaveChangesAsync();
         }
 
         private async Task EnsureRoleAsync(string roleName)
         {
-            if (_roleManager.FindByNameAsync(roleName) == null)
+            if (await _roleManager.FindByNameAsync(roleName) == null)
             {
                 var role = new IdentityRole(roleName);
 
@@ -97,17 +114,20 @@ namespace LearnToExcel.Core.Data
                 EmailConfirmed = true
             };
             const string password = "Chang3m3.";
-
+            if (await _userManager.FindByEmailAsync(email) != null) return applicationUser;
+            
             var result = await _userManager.CreateAsync(applicationUser, password);
 
             if (!result.Succeeded) return applicationUser;
             var resultRole = await _userManager.AddToRoleAsync(applicationUser, role);
             if (!resultRole.Succeeded)
             {
-                throw new Exception($"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, resultRole.Errors)}");
+                throw new Exception(
+                    $"Seeding \"{userName}\" user failed. Errors: {string.Join(Environment.NewLine, resultRole.Errors)}");
             }
 
             return applicationUser;
+            
         }
     }
 }

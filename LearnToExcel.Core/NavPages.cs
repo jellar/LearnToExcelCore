@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -11,7 +8,7 @@ namespace LearnToExcel.Core
     {
         public static string ActivePageKey => "ActivePage";
 
-        public static string Index => "Index";
+        public static string Index => "";
 
         public static string NewAdmissions => "NewAdmissions";
 

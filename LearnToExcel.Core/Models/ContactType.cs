@@ -8,7 +8,7 @@ namespace LearnToExcel.Core.Models
 {
     public class ContactType
     {
-        public int ContactTypeId { get; set; }
+        public int Id { get; set; }
         public string Type { get; set; }
         public string Code { get; set; }
 
