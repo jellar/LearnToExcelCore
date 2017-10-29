@@ -115,6 +115,8 @@ namespace LearnToExcel.Core.Migrations
 
                     b.Property<int>("DepartmentId");
 
+                    b.Property<int?>("InstructorId");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -123,32 +125,31 @@ namespace LearnToExcel.Core.Migrations
 
                     b.HasIndex("DepartmentId");
 
+                    b.HasIndex("InstructorId");
+
                     b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.CourseAssignment", b =>
                 {
-                    b.Property<int>("InstructorID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CourseID");
+                    b.Property<int>("CourseId");
 
-                    b.Property<int?>("InstructorID1");
+                    b.Property<int>("InstructorId");
 
-                    b.HasKey("InstructorID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("CourseID");
-
-                    b.HasIndex("InstructorID1");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("CourseAssignments");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId");
-
-                    b.Property<int?>("InstructorID");
+                    b.Property<int>("DepartmentId")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -157,8 +158,6 @@ namespace LearnToExcel.Core.Migrations
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("DepartmentId");
-
-                    b.HasIndex("InstructorID");
 
                     b.ToTable("Departments");
                 });
@@ -170,11 +169,7 @@ namespace LearnToExcel.Core.Migrations
 
                     b.Property<int>("CourseId");
 
-                    b.Property<int?>("Grade");
-
-                    b.Property<int?>("StudentId");
-
-                    b.Property<int>("StundentId");
+                    b.Property<int>("StudentId");
 
                     b.HasKey("EnrollmentId");
 
@@ -187,12 +182,17 @@ namespace LearnToExcel.Core.Migrations
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Instructor", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email")
+                        .IsRequired();
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<int>("Gender");
 
                     b.Property<DateTime>("HireDate");
 
@@ -200,21 +200,9 @@ namespace LearnToExcel.Core.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Instructor");
-                });
-
-            modelBuilder.Entity("LearnToExcel.Core.Models.OfficeAssignment", b =>
-                {
-                    b.Property<int>("InstructorID");
-
-                    b.Property<string>("Location")
-                        .HasMaxLength(50);
-
-                    b.HasKey("InstructorID");
-
-                    b.ToTable("OfficeAssignments");
+                    b.ToTable("Instructors");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Parent", b =>
@@ -239,7 +227,7 @@ namespace LearnToExcel.Core.Migrations
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Student", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateOfBirth");
@@ -274,7 +262,7 @@ namespace LearnToExcel.Core.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.HasKey("StudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
 
@@ -409,25 +397,18 @@ namespace LearnToExcel.Core.Migrations
                         .WithMany("Courses")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LearnToExcel.Core.Models.Instructor")
+                        .WithMany("Courses")
+                        .HasForeignKey("InstructorId");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.CourseAssignment", b =>
                 {
                     b.HasOne("LearnToExcel.Core.Models.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseID")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LearnToExcel.Core.Models.Instructor", "Instructor")
-                        .WithMany("CourseAssignments")
-                        .HasForeignKey("InstructorID1");
-                });
-
-            modelBuilder.Entity("LearnToExcel.Core.Models.Department", b =>
-                {
-                    b.HasOne("LearnToExcel.Core.Models.Instructor", "Admnistrator")
-                        .WithMany()
-                        .HasForeignKey("InstructorID");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Enrollment", b =>
@@ -439,14 +420,7 @@ namespace LearnToExcel.Core.Migrations
 
                     b.HasOne("LearnToExcel.Core.Models.Student", "Student")
                         .WithMany("Enrollments")
-                        .HasForeignKey("StudentId");
-                });
-
-            modelBuilder.Entity("LearnToExcel.Core.Models.OfficeAssignment", b =>
-                {
-                    b.HasOne("LearnToExcel.Core.Models.Instructor", "Instructor")
-                        .WithOne("OfficeAssignment")
-                        .HasForeignKey("LearnToExcel.Core.Models.OfficeAssignment", "InstructorID")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -55,41 +55,12 @@ namespace LearnToExcel.Core.Data
             await EnsureRoleAsync(studentRoleName);
 
             await CreateUserAsync("admin@learntoexcel.co.uk", "admin@learntoexcel.co.uk", adminRoleName);
-            await CreateUserAsync("employee@learntoexcel.co.uk", "employee@learntoexcel.co.uk", employeeRoleName);
+            await CreateUserAsync("employee-primary@learntoexcel.co.uk", "employee-primary@learntoexcel.co.uk", employeeRoleName);
+            await CreateUserAsync("employee-secondary@learntoexcel.co.uk", "employee-secondary@learntoexcel.co.uk", employeeRoleName);
 
-            if (_context.Courses.Any())
-            {
-                return;
-            }
-            var courses = new[]
-            {
-                new Course() {CourseId = 1, Title = "Maths Only", Credits = 15},
-                new Course() {CourseId = 2, Title = "English Only", Credits = 15},
-                new Course() {CourseId = 3, Title = "English with Maths & Science", Credits = 25}
-            };
-
-            foreach (var couse in courses)
-            {
-                _context.Courses.Add(couse);
-            }
-            // await _context.SaveChangesAsync();
-
-            if (_context.ContactTypes.Any())
-            {
-                return;
-            }
-            var contactTypes = new[]
-            {
-                new ContactType() {Id = 1, Code = "PRIMARY_CONTACT", Type = "Mother Phone"},
-                new ContactType() {Id = 2, Code = "SECONDARY_CONTACT", Type = "Father Phone"},
-                new ContactType() {Id = 3, Code = "EMAIL", Type = "Parent Email"},
-            };
-
-            foreach (var contactType in contactTypes)
-            {
-                _context.ContactTypes.Add(contactType);
-            }
-            await _context.SaveChangesAsync();
+            await CreateContactTypes();
+            await CreateCourses();
+           
         }
 
         private async Task EnsureRoleAsync(string roleName)
@@ -128,6 +99,59 @@ namespace LearnToExcel.Core.Data
 
             return applicationUser;
             
+        }
+
+        private async Task CreateCourses()
+        {
+            var departments = new[]
+            {
+                new Department() {Name = "Primary", StartDate = DateTime.Now},
+                new Department() {Name = "Secondary", StartDate = DateTime.Now},
+            };
+            if (!_context.Departments.Any())
+            {
+                foreach (var department in departments)
+                {
+                    _context.Departments.Add(department);
+                }
+            }
+            await _context.SaveChangesAsync();
+            if (!_context.Courses.Any())
+            {
+                var courses = new[]
+                {
+                    new Course() {CourseId = 1, Title = "Maths", Credits = 15 , DepartmentId = departments[0].DepartmentId},
+                    new Course() {CourseId = 2, Title = "English", Credits = 15, DepartmentId = departments[0].DepartmentId},
+                    new Course() {CourseId = 3, Title = "Maths", Credits = 15,DepartmentId = departments[1].DepartmentId},
+                    new Course() {CourseId = 4, Title = "English", Credits = 15,DepartmentId = departments[1].DepartmentId},
+                    new Course() {CourseId = 5, Title = "Science", Credits = 15,DepartmentId = departments[1].DepartmentId}
+                };
+
+                foreach (var couse in courses)
+                {
+                    _context.Courses.Add(couse);
+                }
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task CreateContactTypes()
+        {
+            if (!_context.ContactTypes.Any())
+            {
+                var contactTypes = new[]
+                {
+                    new ContactType() { Code = "PRIMARY_CONTACT", Type = "Mother Phone"},
+                    new ContactType() {Code = "SECONDARY_CONTACT", Type = "Father Phone"},
+                    new ContactType() {Code = "EMAIL", Type = "Parent Email"},
+                };
+
+                foreach (var contactType in contactTypes)
+                {
+                    _context.ContactTypes.Add(contactType);
+                }
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

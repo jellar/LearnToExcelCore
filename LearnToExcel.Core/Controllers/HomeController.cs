@@ -8,7 +8,7 @@ namespace LearnToExcel.Core.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "administrator,employee")]
         public IActionResult Index()
         {
             return View();

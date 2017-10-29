@@ -1,0 +1,117 @@
+﻿@using LearnToExcel.Core.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+
+@{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+}
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("administrator"))
+{
+    <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN NAVIGATION</li>
+        <li class="@NavPages.IndexNavClass(ViewContext)">
+            <a asp-controller="Home" asp-action="Index">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="treeview @(controllerName == "Admission" ? "active" : "")">
+            <a href="#">
+                <i class="fa fa-files-o"></i>
+                <span>Admissions</span>
+                <span class="pull-right-container">
+                    <span class="fa fa-angle-left pull-right"></span>
+                </span>
+            </a>
+
+            <ul class="treeview-menu">
+                <li class="@NavPages.NewAdmissionsNavClass(ViewContext)">
+                    <a asp-controller="Admission" asp-action="NewAdmissions">
+                        <i class="fa fa-circle-o"></i> New Admission
+                    </a>
+                </li>
+                <li class="@NavPages.AdmittedAdmissionsNavClass(ViewContext)">
+                    <a asp-controller="Admission" asp-action="AdmittedAdmissions">
+                        <i class="fa fa-circle-o"></i> Admitted
+                    </a>
+                </li>
+                <li class="@NavPages.PendingAdmissionsNavClass(ViewContext)">
+                    <a asp-controller="Admission" asp-action="PendingAdmissions">
+                        <i class="fa fa-circle-o"></i> Pending Admissions
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a>
+                <i class="fa fa-th"></i> <span>Attendance Entry</span>
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-green">new</small>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a>
+                <i class="fa fa-th"></i> <span>Payment Entry</span>
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-green">new</small>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a>
+                <i class="fa fa-th"></i> <span> Invoice </span>
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-green">new</small>
+                </span>
+            </a>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-pie-chart"></i>
+                <span>Reports</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a><i class="fa fa-circle-o"></i> Attendance Reports </a></li>
+                <li><a><i class="fa fa-circle-o"></i> Payment Reports</a></li>
+                <li><a><i class="fa fa-circle-o"></i> Student Reports</a></li>
+            </ul>
+        </li>
+        <li>
+            <a asp-controller="Instructor" asp-action="Index">
+                <i class="fa fa-users"></i> <span> Instructors </span>
+            </a>
+        </li>
+    </ul>
+}
+else if(SignInManager.IsSignedIn(User) && User.IsInRole("employee"))
+{
+    <ul class="sidebar-menu" data-widget="tree">
+    <li class="header">MAIN NAVIGATION</li>
+        <li class="@NavPages.IndexNavClass(ViewContext)">
+            <a asp-controller="Home" asp-action="Index">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a>
+                <i class="fa fa-th"></i> <span>My Students</span>
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-green">new</small>
+                </span>
+            </a>
+        </li>
+        <li>
+            <a>
+                <i class="fa fa-th"></i> <span>Attendance Entry</span>
+                <span class="pull-right-container">
+                    <small class="label pull-right bg-green">new</small>
+                </span>
+            </a>
+        </li>
+        </ul>
+}

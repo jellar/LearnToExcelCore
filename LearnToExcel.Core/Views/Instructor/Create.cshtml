@@ -1,0 +1,38 @@
+﻿@model Instructor
+
+@{
+    ViewBag.Title = "Create";
+}
+<section class="content-header">
+    <h1>Create</h1>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <table>
+                <tr>
+                @{
+                    int cnt = 0;
+                    List<LearnToExcel.Core.Models.InstructorViewModels.AssignedCourseData> courses = ViewBag.Courses;
+
+                    foreach (var course in courses)
+                    {
+                        if (cnt++ % 3 == 0)
+                        {
+                            @:</tr><tr>
+                        }
+                        @:<td>
+                        <input type="checkbox"
+                               name="selectedCourses"
+                               value="@course.CourseId"
+                               @(Html.Raw(course.Assigned ? "checked=\"checked\"" : "")) />
+                        @course.CourseId @:  @course.Title
+                        @:</td>
+                    }
+                    @:</tr>
+                }
+            </table>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,24 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LearnToExcel.Core.Models
 {
-    public class Student
+    public class Student : Person
     {
-        public int StudentId { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "First Name")]
-        public string FirstName { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Display(Name = "Surname")]
-        public string Surname { get; set; }
-        public Gender Gender { get; set; }
-        public string FullName => $"{FirstName} {Surname}";
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         [Display(Name = "Date of Birth")]
@@ -47,7 +34,7 @@ namespace LearnToExcel.Core.Models
         [Display(Name = "Monthly Payment Day")]
         public int PaymentDay { get; set; }
 
-        public ICollection<Enrollment> Enrollments { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; }
 
         public int DepartmentId { get; set; }
         public virtual Department Department { get; set; }
@@ -57,8 +44,4 @@ namespace LearnToExcel.Core.Models
 
     }
 
-    public enum Gender
-    {
-        Male, Female, Other
-    }
 }

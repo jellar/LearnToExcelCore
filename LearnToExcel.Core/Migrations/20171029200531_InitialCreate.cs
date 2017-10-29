@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LearnToExcel.Core.Migrations
 {
-    public partial class InitialDbCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,18 +63,34 @@ namespace LearnToExcel.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Instructor",
+                name: "Departments",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Instructors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Gender = table.Column<int>(type: "int", nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instructor", x => x.ID);
+                    table.PrimaryKey("PK_Instructors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -201,41 +217,30 @@ namespace LearnToExcel.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Departments",
+                name: "Courses",
                 columns: table => new
                 {
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    Credits = table.Column<int>(type: "int", nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    InstructorID = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    InstructorId = table.Column<int>(type: "int", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                    table.PrimaryKey("PK_Courses", x => x.CourseId);
                     table.ForeignKey(
-                        name: "FK_Departments_Instructor_InstructorID",
-                        column: x => x.InstructorID,
-                        principalTable: "Instructor",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OfficeAssignments",
-                columns: table => new
-                {
-                    InstructorID = table.Column<int>(type: "int", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OfficeAssignments", x => x.InstructorID);
-                    table.ForeignKey(
-                        name: "FK_OfficeAssignments_Instructor_InstructorID",
-                        column: x => x.InstructorID,
-                        principalTable: "Instructor",
-                        principalColumn: "ID",
+                        name: "FK_Courses_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Courses_Instructors_InstructorId",
+                        column: x => x.InstructorId,
+                        principalTable: "Instructors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -266,30 +271,10 @@ namespace LearnToExcel.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Courses",
-                columns: table => new
-                {
-                    CourseId = table.Column<int>(type: "int", nullable: false),
-                    Credits = table.Column<int>(type: "int", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Courses", x => x.CourseId);
-                    table.ForeignKey(
-                        name: "FK_Courses_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
-                    StudentId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
@@ -300,6 +285,7 @@ namespace LearnToExcel.Core.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     KnownMedicalConditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ParentId = table.Column<int>(type: "int", nullable: false),
+                    PaymentDay = table.Column<int>(type: "int", nullable: false),
                     SchoolName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ShchoolYear = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -307,7 +293,7 @@ namespace LearnToExcel.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.StudentId);
+                    table.PrimaryKey("PK_Students", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Students_Departments_DepartmentId",
                         column: x => x.DepartmentId,
@@ -326,26 +312,20 @@ namespace LearnToExcel.Core.Migrations
                 name: "CourseAssignments",
                 columns: table => new
                 {
-                    InstructorID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CourseID = table.Column<int>(type: "int", nullable: false),
-                    InstructorID1 = table.Column<int>(type: "int", nullable: true)
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    InstructorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseAssignments", x => x.InstructorID);
+                    table.PrimaryKey("PK_CourseAssignments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourseAssignments_Courses_CourseID",
-                        column: x => x.CourseID,
+                        name: "FK_CourseAssignments_Courses_CourseId",
+                        column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "CourseId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CourseAssignments_Instructor_InstructorID1",
-                        column: x => x.InstructorID1,
-                        principalTable: "Instructor",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -355,9 +335,7 @@ namespace LearnToExcel.Core.Migrations
                     EnrollmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CourseId = table.Column<int>(type: "int", nullable: false),
-                    Grade = table.Column<int>(type: "int", nullable: true),
-                    StudentId = table.Column<int>(type: "int", nullable: true),
-                    StundentId = table.Column<int>(type: "int", nullable: false)
+                    StudentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -372,8 +350,8 @@ namespace LearnToExcel.Core.Migrations
                         name: "FK_Enrollments_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
-                        principalColumn: "StudentId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -427,14 +405,9 @@ namespace LearnToExcel.Core.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseAssignments_CourseID",
+                name: "IX_CourseAssignments_CourseId",
                 table: "CourseAssignments",
-                column: "CourseID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CourseAssignments_InstructorID1",
-                table: "CourseAssignments",
-                column: "InstructorID1");
+                column: "CourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Courses_DepartmentId",
@@ -442,9 +415,9 @@ namespace LearnToExcel.Core.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_InstructorID",
-                table: "Departments",
-                column: "InstructorID");
+                name: "IX_Courses_InstructorId",
+                table: "Courses",
+                column: "InstructorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Enrollments_CourseId",
@@ -494,9 +467,6 @@ namespace LearnToExcel.Core.Migrations
                 name: "Enrollments");
 
             migrationBuilder.DropTable(
-                name: "OfficeAssignments");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -512,13 +482,13 @@ namespace LearnToExcel.Core.Migrations
                 name: "Students");
 
             migrationBuilder.DropTable(
+                name: "Instructors");
+
+            migrationBuilder.DropTable(
                 name: "Departments");
 
             migrationBuilder.DropTable(
                 name: "Parents");
-
-            migrationBuilder.DropTable(
-                name: "Instructor");
         }
     }
 }

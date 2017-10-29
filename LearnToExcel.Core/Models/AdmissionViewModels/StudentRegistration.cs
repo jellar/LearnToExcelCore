@@ -15,6 +15,9 @@ namespace LearnToExcel.Core.Models.AdmissionViewModels
         [Required (ErrorMessage = "Student Surname is required")]
         public string Surname { get; set; }
 
+        [Required]
+        public Gender Gender { get; set; }
+
         [Required (ErrorMessage = "Student Date of Birth is required")]
         [Display(Name = "Date Of Birth")]
         public DateTime DateofBirth { get; set; }
@@ -38,6 +41,10 @@ namespace LearnToExcel.Core.Models.AdmissionViewModels
     
         [Display(Name = "Any known medical conditions")]
         public string MedicalConditions { get; set; }
+
+        [Required]
+        [Display(Name = "Monthly Payment Day")]
+        public int PaymentDay { get; set; }
     }
 
     public class ParentView
