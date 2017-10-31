@@ -12,9 +12,10 @@ using System;
 namespace LearnToExcel.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171030215426_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,12 +188,8 @@ namespace LearnToExcel.Core.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("Active");
-
                     b.Property<string>("Email")
                         .IsRequired();
-
-                    b.Property<DateTime>("EndDate");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

@@ -309,7 +309,7 @@ namespace LearnToExcel.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourseAssignments",
+                name: "CourseInstructor",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -319,12 +319,18 @@ namespace LearnToExcel.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CourseAssignments", x => x.Id);
+                    table.PrimaryKey("PK_CourseInstructor", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourseAssignments_Courses_CourseId",
+                        name: "FK_CourseInstructor_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseInstructor_Instructors_InstructorId",
+                        column: x => x.InstructorId,
+                        principalTable: "Instructors",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -405,9 +411,14 @@ namespace LearnToExcel.Core.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseAssignments_CourseId",
-                table: "CourseAssignments",
+                name: "IX_CourseInstructor_CourseId",
+                table: "CourseInstructor",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseInstructor_InstructorId",
+                table: "CourseInstructor",
+                column: "InstructorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Courses_DepartmentId",
@@ -461,7 +472,7 @@ namespace LearnToExcel.Core.Migrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "CourseAssignments");
+                name: "CourseInstructor");
 
             migrationBuilder.DropTable(
                 name: "Enrollments");

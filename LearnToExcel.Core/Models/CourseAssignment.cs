@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LearnToExcel.Core.Models
 {
-    public class CourseAssignment
+    public class CourseInstructor
     {
         [Key]
         public int Id { get; set; }
@@ -15,5 +15,6 @@ namespace LearnToExcel.Core.Models
         public int InstructorId { get; set; }
         public int CourseId { get; set; }
         public virtual Course Course { get; set; }
+        public virtual Instructor Instructor { get; set; }
     }
 }

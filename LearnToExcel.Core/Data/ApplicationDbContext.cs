@@ -28,6 +28,6 @@ namespace LearnToExcel.Core.Data
         public DbSet<Parent> Parents { get; set; }
         public DbSet<ContactType> ContactTypes { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<CourseAssignment> CourseAssignments { get; set; }
+        public DbSet<CourseInstructor> CourseInstructor { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using System;
 namespace LearnToExcel.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171029200531_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20171030220057_InstructorUpdate")]
+    partial class InstructorUpdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -131,7 +131,7 @@ namespace LearnToExcel.Core.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("LearnToExcel.Core.Models.CourseAssignment", b =>
+            modelBuilder.Entity("LearnToExcel.Core.Models.CourseInstructor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -144,7 +144,9 @@ namespace LearnToExcel.Core.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseAssignments");
+                    b.HasIndex("InstructorId");
+
+                    b.ToTable("CourseInstructor");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Department", b =>
@@ -185,6 +187,8 @@ namespace LearnToExcel.Core.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Active");
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -404,11 +408,16 @@ namespace LearnToExcel.Core.Migrations
                         .HasForeignKey("InstructorId");
                 });
 
-            modelBuilder.Entity("LearnToExcel.Core.Models.CourseAssignment", b =>
+            modelBuilder.Entity("LearnToExcel.Core.Models.CourseInstructor", b =>
                 {
                     b.HasOne("LearnToExcel.Core.Models.Course", "Course")
                         .WithMany()
                         .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("LearnToExcel.Core.Models.Instructor", "Instructor")
+                        .WithMany()
+                        .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
