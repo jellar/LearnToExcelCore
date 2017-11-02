@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LearnToExcel.Core.Data;
 using LearnToExcel.Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,8 +9,6 @@ using System.Net;
 using System.Threading.Tasks;
 using LearnToExcel.Core.Models.InstructorViewModels;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 namespace LearnToExcel.Core.Controllers
 {
@@ -26,21 +24,18 @@ namespace LearnToExcel.Core.Controllers
         }
         public IActionResult Index(int? id, int? courseId)
         {
-            var instructors = _context.Instructors
-                .OrderBy(i => i.Surname).ToList();
-
-
-            var courses = new List<Course>();
-            var viewModel = new InstructorIndexData()
-            {
-                Instructors = instructors,
-                Courses = courses
-            };
+            var viewModel = new InstructorIndexData();
+            var model = _context.CourseInstructors.Include(ci=>ci.Instructor);
+            var instructors = _context.Instructors.OrderBy(i => i.Surname).ToList();
+            viewModel.Instructors = instructors;
+           
             return View(viewModel);
         }
 
         public ActionResult Create()
         {
+            var instructor = new Instructor();
+            PopulateAssignedCourseData(instructor);
             return View();
         }
 
@@ -51,16 +46,25 @@ namespace LearnToExcel.Core.Controllers
             {
                 _context.Instructors.Add(vm);
                 var courses = _context.Courses.ToList();
-
+                UpdateInstructorCourses(selectedCourses, courses, vm);
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<List<Course>> InstructorCourses(int id)
+        {
+           var courses = await _context.CourseInstructors
+                .Where(ci => ci.InstructorId == id)
+                .Select(ci => ci.Course).ToListAsync();
+            return courses;
+        }
+
         private void PopulateAssignedCourseData(Instructor instructor)
         {
             var allCourses = _context.Courses.Include(c => c.Department);
             //var instructorCourses = new HashSet<int>(instructor.Courses.Select(c => c.CourseId));
-            var instructorCourses = new HashSet<int>(instructor.CourseInstructor.Where(i => i.InstructorId == instructor.Id).Select(c => c.CourseId));
+            var instructorCourses = new HashSet<int>(_context.CourseInstructors.Where(i => i.InstructorId == instructor.Id).Select(c => c.CourseId));
             var viewModel = new List<AssignedCourseData>();
             foreach (var course in allCourses)
             {
@@ -74,45 +78,45 @@ namespace LearnToExcel.Core.Controllers
             }
             ViewBag.Courses = viewModel;
         }
-        private void PopulateAssignedCourseData(Instructor model)
-        {
-            var allCourses = _context.Courses;
-            var instructorCourses = new HashSet<int>(model.CourseInstructors.Select(c => c.CourseID));
-            var viewModel = allCourses.Select(course => new Command.AssignedCourseData
-            {
-                CourseID = course.Id,
-                Title = course.Title,
-                Assigned = instructorCourses.Contains(course.Id)
-            }).ToList();
-            model.AssignedCourses = viewModel;
-        }
+        //private void PopulateAssignedCourseData(Instructor model)
+        //{
+        //    var allCourses = _context.Courses;
+        //    var instructorCourses = new HashSet<int>(model.CourseInstructors.Select(c => c.CourseID));
+        //    var viewModel = allCourses.Select(course => new Command.AssignedCourseData
+        //    {
+        //        CourseID = course.Id,
+        //        Title = course.Title,
+        //        Assigned = instructorCourses.Contains(course.Id)
+        //    }).ToList();
+        //    model.AssignedCourses = viewModel;
+        //}
         private void UpdateInstructorCourses(string[] selectedCourses, IEnumerable<Course> courses, Instructor instructor)
         {
-            var CourseInstructors = new List<CourseInstructor>();
+            var courseInstructors = _context.CourseInstructors;
             if (selectedCourses == null)
             {
                 return;
             }
 
-            var selectedCoursesHS = new HashSet<string>(selectedCourses);
+            var selectedCoursesHs = new HashSet<string>(selectedCourses);
             var instructorCourses = new HashSet<int>
-                (CourseInstructors.Select(c => c.CourseId));
+                (courseInstructors.Select(c => c.CourseId));
 
             foreach (var course in courses)
             {
-                if (selectedCoursesHS.Contains(course.CourseId.ToString()))
+                if (selectedCoursesHs.Contains(course.CourseId.ToString()))
                 {
                     if (!instructorCourses.Contains(course.CourseId))
                     {
-                        CourseInstructors.Add(new CourseInstructor { Course = course, Instructor = instructor });
+                        courseInstructors.Add(new CourseInstructor { Course = course, Instructor = instructor });
                     }
                 }
                 else
                 {
                     if (instructorCourses.Contains(course.CourseId))
                     {
-                        var toRemove = CourseInstructors.Single(ci => ci.CourseId == course.CourseId);
-                        CourseInstructors.Remove(toRemove);
+                        var toRemove = courseInstructors.Single(ci => ci.CourseId == course.CourseId);
+                        courseInstructors.Remove(toRemove);
                     }
                 }
             }
