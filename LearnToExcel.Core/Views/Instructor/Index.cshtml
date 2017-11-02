@@ -45,7 +45,7 @@
                                 foreach (var course in Model.CourseInstructors.Where(i => i.InstructorId == item.Id))
                                 {
                                     @course.CourseId
-                                    @: @course.Course.Title <br/>
+                                    @: @course.Course.Title - @course.Course.Department.Name <br/>
                                 }
                             }
                         </td>

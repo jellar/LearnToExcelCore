@@ -7,7 +7,7 @@ namespace LearnToExcel.Core.Models
     public class Instructor : Person
     {
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0: yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0: dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Start Date")]
         public DateTime HireDate { get; set; }
 
