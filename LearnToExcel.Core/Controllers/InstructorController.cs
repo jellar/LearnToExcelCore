@@ -28,7 +28,9 @@ namespace LearnToExcel.Core.Controllers
             var model = _context.CourseInstructors.Include(ci=>ci.Instructor);
             var instructors = _context.Instructors.OrderBy(i => i.Surname).ToList();
             viewModel.Instructors = instructors;
-           
+            List<CourseInstructor> courses =
+                new List<CourseInstructor>(_context.CourseInstructors.Include(c => c.Course).ToList());
+            viewModel.CourseInstructors = courses;
             return View(viewModel);
         }
 
@@ -92,7 +94,7 @@ namespace LearnToExcel.Core.Controllers
         //}
         private void UpdateInstructorCourses(string[] selectedCourses, IEnumerable<Course> courses, Instructor instructor)
         {
-            var courseInstructors = _context.CourseInstructors;
+            var courseInstructors = _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id).ToList();
             if (selectedCourses == null)
             {
                 return;
@@ -108,7 +110,7 @@ namespace LearnToExcel.Core.Controllers
                 {
                     if (!instructorCourses.Contains(course.CourseId))
                     {
-                        courseInstructors.Add(new CourseInstructor { Course = course, Instructor = instructor });
+                        courseInstructors.Add(new CourseInstructor { CourseId = course.CourseId, InstructorId = instructor.Id });
                     }
                 }
                 else
