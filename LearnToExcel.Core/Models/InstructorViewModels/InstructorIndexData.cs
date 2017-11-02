@@ -9,8 +9,7 @@ namespace LearnToExcel.Core.Models.InstructorViewModels
     public class InstructorIndexData
     {
         public ICollection<Instructor> Instructors { get; set; }
-        public ICollection<Course> Courses { get; set; }
-        public ICollection<Enrollment> Enrollments { get; set; }
+        public List<CourseInstructor> CourseInstructors { get; set; }
        
     }
 }
