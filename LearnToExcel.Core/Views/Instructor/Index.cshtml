@@ -1,6 +1,7 @@
-﻿@model LearnToExcel.Core.Models.InstructorViewModels.InstructorIndexData
+@model LearnToExcel.Core.Models.InstructorViewModels.InstructorIndexData
 @{
     ViewBag.Title = "Instructors";
+
 }
 <section class="content-header">
     <h1>Instructors</h1>
@@ -16,6 +17,7 @@
             
             <table class="table table-bordered">
                 <tr>
+                    <th>Id</th>
                     <th>Surname</th>
                     <th>First Name</th>
                     <th>Start Date</th>
@@ -27,6 +29,7 @@
                 @foreach (var item in Model.Instructors)
                 {
                     <tr>
+                        <td>@item.Id</td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Surname)
                         </td>
@@ -38,14 +41,20 @@
                         </td>
                         <td>@item.Email</td>
                         <td>
-                           
+                            @{
+                                foreach (var course in Model.CourseInstructors.Where(i => i.InstructorId == item.Id))
+                                {
+                                    @course.CourseId
+                                    @: @course.Course.Title <br/>
+                                }
+                            }
                         </td>
 
                         <td>
-                            @Html.ActionLink("Select", "Index", new { id = item.Id }) |
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                            @Html.ActionLink("Select", "Index", new {id = item.Id}) |
+                            @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
+                            @Html.ActionLink("Details", "Details", new {id = item.Id}) |
+                            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
                         </td>
                     </tr>
                 }
