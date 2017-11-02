@@ -1,4 +1,6 @@
-﻿namespace LearnToExcel.Core.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace LearnToExcel.Core.Models
 {
     public enum Grade
     {
@@ -6,7 +8,8 @@
     }
     public class Enrollment
     {
-        public int EnrollmentId { get; set; }
+        [Column("EnrollmentID")]
+        public int Id { get; set; }
         public int CourseId { get; set; }
         public int StudentId { get; set; }
         public virtual Course Course { get; set; }

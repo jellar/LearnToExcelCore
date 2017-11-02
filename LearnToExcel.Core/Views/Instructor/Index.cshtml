@@ -4,8 +4,54 @@
 }
 <section class="content-header">
     <h1>Instructors</h1>
+    <br /> 
+    <div class="box">
+      
+    <!-- /.box-header -->
+        <div class="box-body">
+            <p>
+                <a asp-controller="Instructor" asp-action="Create">Create New Instructor</a>
+                
+            </p>
+            
+            <table class="table table-bordered">
+                <tr>
+                    <th>Surname</th>
+                    <th>First Name</th>
+                    <th>Start Date</th>
+                    <th>Email</th>
+                    <th>Courses</th>
+                    <th></th>
+                </tr>
 
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
+                @foreach (var item in Model.Instructors)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HireDate)
+                        </td>
+                        <td>@item.Email</td>
+                        <td>
+                           
+                        </td>
+
+                        <td>
+                            @Html.ActionLink("Select", "Index", new { id = item.Id }) |
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+        </div>
+    
 </section>

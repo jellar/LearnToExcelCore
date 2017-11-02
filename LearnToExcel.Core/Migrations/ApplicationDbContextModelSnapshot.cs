@@ -115,8 +115,6 @@ namespace LearnToExcel.Core.Migrations
 
                     b.Property<int>("DepartmentId");
 
-                    b.Property<int?>("InstructorId");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100);
@@ -125,33 +123,29 @@ namespace LearnToExcel.Core.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("InstructorId");
-
                     b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.CourseInstructor", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
                     b.Property<int>("CourseId");
 
                     b.Property<int>("InstructorId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
+                    b.HasKey("CourseId", "InstructorId");
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("CourseInstructor");
+                    b.ToTable("CourseInstructors");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("DepartmentID");
+
+                    b.Property<int?>("InstructorId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -159,21 +153,24 @@ namespace LearnToExcel.Core.Migrations
 
                     b.Property<DateTime>("StartDate");
 
-                    b.HasKey("DepartmentId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstructorId");
 
                     b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Enrollment", b =>
                 {
-                    b.Property<int>("EnrollmentId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("EnrollmentID");
 
                     b.Property<int>("CourseId");
 
                     b.Property<int>("StudentId");
 
-                    b.HasKey("EnrollmentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
@@ -261,8 +258,6 @@ namespace LearnToExcel.Core.Migrations
                     b.Property<string>("SchoolName");
 
                     b.Property<int>("ShchoolYear");
-
-                    b.Property<DateTime>("StartDate");
 
                     b.Property<string>("Surname")
                         .IsRequired()
@@ -403,16 +398,12 @@ namespace LearnToExcel.Core.Migrations
                         .WithMany("Courses")
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("LearnToExcel.Core.Models.Instructor")
-                        .WithMany("Courses")
-                        .HasForeignKey("InstructorId");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.CourseInstructor", b =>
                 {
                     b.HasOne("LearnToExcel.Core.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("CourseInstructors")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -420,6 +411,13 @@ namespace LearnToExcel.Core.Migrations
                         .WithMany()
                         .HasForeignKey("InstructorId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("LearnToExcel.Core.Models.Department", b =>
+                {
+                    b.HasOne("LearnToExcel.Core.Models.Instructor", "Administrator")
+                        .WithMany()
+                        .HasForeignKey("InstructorId");
                 });
 
             modelBuilder.Entity("LearnToExcel.Core.Models.Enrollment", b =>

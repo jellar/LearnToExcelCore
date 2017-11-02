@@ -13,7 +13,7 @@ namespace LearnToExcel.Core.Models
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
-        [Display(Name = "Enrollment Date")]
+        [Display(Name = "Start Date")]
         public DateTime EnrolmentDate { get; set; }
 
         [Display(Name = "Name of School")]
@@ -25,8 +25,6 @@ namespace LearnToExcel.Core.Models
         [Display(Name = "Any known medical conditions")]
         public string KnownMedicalConditions { get; set; }
 
-        public DateTime StartDate { get; set; }
-
         public DateTime EndDate { get; set; }
 
         public bool IsActive { get; set; }
@@ -34,7 +32,7 @@ namespace LearnToExcel.Core.Models
         [Display(Name = "Monthly Payment Day")]
         public int PaymentDay { get; set; }
 
-        public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
         public int DepartmentId { get; set; }
         public virtual Department Department { get; set; }

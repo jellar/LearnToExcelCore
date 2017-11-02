@@ -16,6 +16,7 @@ namespace LearnToExcel.Core.Models
         public int Credits { get; set; }
         public int DepartmentId { get; set; }
         public virtual Department Department { get; set; }
-        public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public virtual ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
     }
 }

@@ -120,11 +120,11 @@ namespace LearnToExcel.Core.Data
             {
                 var courses = new[]
                 {
-                    new Course() {CourseId = 1, Title = "Maths", Credits = 15 , DepartmentId = departments[0].DepartmentId},
-                    new Course() {CourseId = 2, Title = "English", Credits = 15, DepartmentId = departments[0].DepartmentId},
-                    new Course() {CourseId = 3, Title = "Maths", Credits = 15,DepartmentId = departments[1].DepartmentId},
-                    new Course() {CourseId = 4, Title = "English", Credits = 15,DepartmentId = departments[1].DepartmentId},
-                    new Course() {CourseId = 5, Title = "Science", Credits = 15,DepartmentId = departments[1].DepartmentId}
+                    new Course() {CourseId = 1, Title = "Maths", Credits = 15 , DepartmentId = departments[0].Id},
+                    new Course() {CourseId = 2, Title = "English", Credits = 15, DepartmentId = departments[0].Id},
+                    new Course() {CourseId = 3, Title = "Maths", Credits = 15,DepartmentId = departments[1].Id},
+                    new Course() {CourseId = 4, Title = "English", Credits = 15,DepartmentId = departments[1].Id},
+                    new Course() {CourseId = 5, Title = "Science", Credits = 15,DepartmentId = departments[1].Id}
                 };
 
                 foreach (var couse in courses)

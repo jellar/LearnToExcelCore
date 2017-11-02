@@ -18,6 +18,8 @@ namespace LearnToExcel.Core.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
             //builder.RemovePluralizingTableNameConventions();
+
+            builder.Entity<CourseInstructor>().HasKey(ci => new { ci.CourseId, ci.InstructorId });
         }
 
         public DbSet<Course> Courses { get; set; }
@@ -28,6 +30,6 @@ namespace LearnToExcel.Core.Data
         public DbSet<Parent> Parents { get; set; }
         public DbSet<ContactType> ContactTypes { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<CourseInstructor> CourseInstructor { get; set; }
+        public DbSet<CourseInstructor> CourseInstructors { get; set; }
     }
 }

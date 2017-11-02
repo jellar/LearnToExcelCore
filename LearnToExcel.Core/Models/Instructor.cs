@@ -15,8 +15,8 @@ namespace LearnToExcel.Core.Models
         public string Email { get; set; }
 
         public bool Active { get; set; }
+
         public DateTime EndDate { get; set; }
-        public virtual ICollection<Course> Courses { get; set; }
-        
+
     }
 }

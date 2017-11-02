@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
+
 
 namespace LearnToExcel.Core
 {
@@ -49,8 +51,10 @@ namespace LearnToExcel.Core
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;                
-            }); 
+            });
+            
             services.AddMvc();
+            
             // Add Database Initializer
             services.AddTransient<IDbInitializer, DbInitializer>();
         }
