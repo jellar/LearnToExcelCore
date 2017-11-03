@@ -22,46 +22,45 @@ namespace LearnToExcel.Core.Controllers
             _context = context;
             _logger = logger;
         }
-        public IActionResult Index(int? id, int? courseId)
+        public async Task<IActionResult> Index(int? id, int? courseId)
         {
             var viewModel = new InstructorIndexData();
-            var model = _context.CourseInstructors.Include(ci=>ci.Instructor);
-            var instructors = _context.Instructors.OrderBy(i => i.Surname).ToList();
+            var instructors = await _context.Instructors.OrderBy(i => i.Surname).ToListAsync();
             viewModel.Instructors = instructors;
             List<CourseInstructor> courses =
-                new List<CourseInstructor>(_context.CourseInstructors.Include(c => c.Course).ThenInclude(d=>d.Department).ToList());
+                new List<CourseInstructor>(await _context.CourseInstructors.Include(c => c.Course).ThenInclude(d => d.Department).ToListAsync());
             viewModel.CourseInstructors = courses;
             return View(viewModel);
         }
 
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var instructor = new Instructor();
-            PopulateAssignedCourseData(instructor);
+            await PopulateAssignedCourseData(instructor);
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Instructor vm, string[] selectedCourses)
+        public async Task<IActionResult> Create(Instructor vm, string[] selectedCourses)
         {
             if (ModelState.IsValid)
             {
                 _context.Instructors.Add(vm);
-                _context.SaveChanges();
-                UpdateInstructorCourses(selectedCourses, vm);
+                await _context.SaveChangesAsync();
+                await UpdateInstructorCourses(selectedCourses, vm);
             }
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Instructor/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return BadRequest();
             }
-            Instructor instructor = _context.Instructors.Where(i => i.Id == id).Single();
-            PopulateAssignedCourseData(instructor);
+            Instructor instructor = await _context.Instructors.SingleAsync(i => i.Id == id);
+            await PopulateAssignedCourseData(instructor);
             if (instructor == null)
             {
                 return BadRequest();
@@ -71,11 +70,11 @@ namespace LearnToExcel.Core.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int? id, Instructor vm, string[] selectedCourses)
+        public async Task<ActionResult> Edit(int? id, Instructor vm, string[] selectedCourses)
         {
             if (ModelState.IsValid)
             {
-                var instructorToUpdate = _context.Instructors.Where(i => i.Id == id).Single();
+                var instructorToUpdate = _context.Instructors.Single(i => i.Id == id);
                 if (instructorToUpdate != null)
                 {
                     instructorToUpdate.FirstName = vm.FirstName;
@@ -84,21 +83,21 @@ namespace LearnToExcel.Core.Controllers
                     instructorToUpdate.HireDate = vm.HireDate;
                     instructorToUpdate.Gender = vm.Gender;
                     _context.Entry(instructorToUpdate).State = EntityState.Modified;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     if (selectedCourses != null)
                     {
-                        UpdateInstructorCourses(selectedCourses, instructorToUpdate);
+                       await UpdateInstructorCourses(selectedCourses, instructorToUpdate);
                     }
                 }
-                
+
             }
-            PopulateAssignedCourseData(vm);
+            await PopulateAssignedCourseData(vm);
             return RedirectToAction(nameof(Index));
         }
 
-        private void PopulateAssignedCourseData(Instructor instructor)
+        private async Task PopulateAssignedCourseData(Instructor instructor)
         {
-            var allCourses = _context.Courses.Include(c => c.Department);
+            var allCourses = await _context.Courses.Include(c => c.Department).ToListAsync();
             //var instructorCourses = new HashSet<int>(instructor.Courses.Select(c => c.CourseId));
             var instructorCourses = new HashSet<int>(_context.CourseInstructors.Where(i => i.InstructorId == instructor.Id).Select(c => c.CourseId));
             var viewModel = new List<AssignedCourseData>();
@@ -114,8 +113,8 @@ namespace LearnToExcel.Core.Controllers
             }
             ViewBag.Courses = viewModel;
         }
-       
-        private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructor)
+
+        private async Task UpdateInstructorCourses(string[] selectedCourses, Instructor instructor)
         {
             var courseInstructors = _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id).ToList();
             var courses = _context.Courses.ToList();
@@ -145,7 +144,21 @@ namespace LearnToExcel.Core.Controllers
                     }
                 }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Instructor instructor = await _context.Instructors.Where(i => i.Id == id).SingleAsync();
+            if (instructor == null)
+            {
+                return BadRequest();
+            }
+            _context.Instructors.Remove(instructor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
