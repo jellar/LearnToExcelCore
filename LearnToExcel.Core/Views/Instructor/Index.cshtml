@@ -6,9 +6,9 @@
 <section class="content-header">
     <h1>Instructors</h1>
     <br /> 
-    <div class="box">
+    <div class="box box-primary">
       
-    <!-- /.box-header -->
+        <!-- /.box-header -->
         <div class="box-body">
             <p>
                 <a asp-controller="Instructor" asp-action="Create">Create New Instructor</a>
@@ -51,16 +51,41 @@
                         </td>
 
                         <td>
-                            @Html.ActionLink("Select", "Index", new {id = item.Id}) |
-                            @Html.ActionLink("Edit", "Edit", new {id = item.Id}) |
-                            @Html.ActionLink("Details", "Details", new {id = item.Id}) |
-                            @Html.ActionLink("Delete", "Delete", new {id = item.Id})
+                            <a class="btn btn-link" asp-controller="Instructor" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a class="btn btn-link" data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                            
+                            <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog modal-open" role="document">
+                                    <div class="modal-content">
+                                        <form method="post" asp-controller="Instructor" asp-action="Delete" asp-route-id="@item.Id" >
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete: @item.FirstName &nbsp; @item.Surname ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 }
 
             </table>
         </div>
-        </div>
+    </div>
     
+   
 </section>
+@section Scripts{ 
+    <script>
+        $('#confirm-delete').on('show.bs.modal', function(e) {         
+        });
+    </script>
+}
