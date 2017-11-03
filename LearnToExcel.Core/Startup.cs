@@ -53,7 +53,8 @@ namespace LearnToExcel.Core
                 options.SlidingExpiration = true;                
             });
             
-            services.AddMvc();
+            services.AddMvc()
+                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
             
             // Add Database Initializer
             services.AddTransient<IDbInitializer, DbInitializer>();
