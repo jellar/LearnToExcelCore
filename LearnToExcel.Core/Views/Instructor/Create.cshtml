@@ -1,4 +1,4 @@
-﻿@model LearnToExcel.Core.Models.Instructor
+@model LearnToExcel.Core.Models.Instructor
 
 @{
     ViewBag.Title = "Create new Instructor";
@@ -6,9 +6,7 @@
 <section class="content-header">
    
     <form method="post" asp-controller="Instructor" asp-action="Create">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="box box-primary">
+        <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Create new Instructor</h3>
                         <div class="form-horizontal">
@@ -84,16 +82,13 @@
                             </div>
                             <div class="box-footer">
                                 <div class="btn-box-tool pull-right">
-                                    <a class="btn btn-default">Cancel</a> &nbsp;
+                                    <a class="btn btn-default" asp-action="Index">Cancel</a> &nbsp;
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </div>
                             </div>
                     </div>
                 </div>
-            </div>
-
-        </div>
     </form>
     
 </section>
