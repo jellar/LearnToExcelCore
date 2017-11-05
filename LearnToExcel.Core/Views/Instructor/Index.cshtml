@@ -83,8 +83,8 @@
                 <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Surname</th>
                     <th>First Name</th>
+                    <th>Surname</th>
                     <th>Start Date</th>
                     <th>Email</th>
                     <th>Courses</th>
@@ -119,25 +119,34 @@
                 "targets": [0],  
                 "visible": false,  
                 "searchable": false  
+            },{  
+                "targets": [5,6,7],
+                "orderable": false,
+                "searchable": false  
             }],  
             "columns": [  
                 { "data": "id", "name": "Id", "autoWidth": true },
                 { "data": "firstName", "name": "FirstName", "autoWidth": true},  
-                { "data": "surname", "name": "Surname", "autoWidth": true },  
-                { "data": "hireDate", "name": "StartDate", "autoWidth": true },  
+                { "data": "surname", "name": "Surname", "autoWidth": true },
+                {
+                    "data": "hireDate", "name": "hireDate", "autoWidth": true ,
+                    render: function(d){
+                        return moment(d).format("DD/MM/YYYY");
+                    }
+                },  
                 { "data": "email", "name": "Email", "autoWidth": true },
 
-                { "data": "coursesList", "name": "Courses", "autoWidth": true },
+                { "data": "coursesList", "name": "Courses", "autoWidth": true},
 
                 {  
                     "render": function (data, type, full, meta)  
-                    { return '<a class="btn btn-info" href="/Instructor/Edit/' + full.Id + '">Edit</a>'; }  
+                    { return '<a class="btn btn-primary btn-sm" href="/Instructor/Edit/' + full.id + '">Edit</a>'; }  
                 },  
                 {  
                     data: null, render: function (data, type, row)  
                     {  
-                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.Id + "'); >Delete</a>";  
-                    }  
+                        return "<a href='#' class='btn btn-danger btn-sm' onclick=DeleteData('" + row.id + "'); >Delete</a>";  
+                    }
                 }
             ]  
         }); 

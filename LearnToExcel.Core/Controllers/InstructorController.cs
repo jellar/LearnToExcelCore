@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using LearnToExcel.Core.Models.InstructorViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 
 namespace LearnToExcel.Core.Controllers
@@ -60,38 +61,35 @@ namespace LearnToExcel.Core.Controllers
                 int recordsTotal = 0;
 
                 // Getting all Customer data  
+                var instructors = _context.Instructors.OrderBy(i => i.Surname).AsQueryable();
                 
-
-                var instructorData = (from tempInstructor in _context.Instructors select tempInstructor);
-                var viewModel = new InstructorIndexData();
-                var instructors = _context.Instructors.OrderBy(i => i.Surname).ToList();
-                viewModel.Instructors = instructors;
                 foreach (var instructor in instructors)
                 {
-                    foreach (var course in _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id)
-                        .Select(c => c.Course).ToList())
+                    var courses = _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id)
+                        .Select(c => c.Course).Include(d => d.Department).ToList();
+
+                    foreach (var course in courses)
                     {
-                        instructor.CoursesList = instructor.CoursesList +
-                                                 string.Format("{0} -{1}", course.Title, course.Department.Name);
+                        instructor.CoursesList += string.Format("{0} - {1} <br/>", course.Title, course.Department.Name);
                     }
                     
-                    //string s = string.Empty;
-                    //instructor.CoursesList = "test";    
                 }
 
                 ////Sorting  
                 //if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                //{
-                //    instructorData = instructorData.OrderBy(sortColumn + " " + sortColumnDirection);
-                //}
+                {
+                    instructors = instructors.OrderBy(sortColumn + " " + sortColumnDirection);
+                }
                 ////Search  
-                //if (!string.IsNullOrEmpty(searchValue))
-                //{
-                //    instructorData = instructorData.Where(m => m.FirstName == searchValue);
-                //}
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    instructors = instructors.Where(m => m.FirstName.Contains(searchValue) ||
+                                                         m.Surname.Contains(searchValue));
+                    
+                }
 
                 //total number of rows count   
-                recordsTotal = instructors.Count;
+                recordsTotal = instructors.Count();
                 
                 //Paging   
                 var data = instructors.Skip(skip).Take(pageSize).ToList();
