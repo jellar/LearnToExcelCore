@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
-
+using Newtonsoft.Json.Serialization;
 
 namespace LearnToExcel.Core
 {
@@ -54,7 +53,7 @@ namespace LearnToExcel.Core
             });
             
             services.AddMvc()
-                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             
             // Add Database Initializer
             services.AddTransient<IDbInitializer, DbInitializer>();

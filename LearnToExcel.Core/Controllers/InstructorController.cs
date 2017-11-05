@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LearnToExcel.Core.Data;
 using LearnToExcel.Core.Models;
@@ -9,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using LearnToExcel.Core.Models.InstructorViewModels;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace LearnToExcel.Core.Controllers
 {
@@ -27,10 +29,84 @@ namespace LearnToExcel.Core.Controllers
             var viewModel = new InstructorIndexData();
             var instructors = await _context.Instructors.OrderBy(i => i.Surname).ToListAsync();
             viewModel.Instructors = instructors;
-            List<CourseInstructor> courses =
-                new List<CourseInstructor>(await _context.CourseInstructors.Include(c => c.Course).ThenInclude(d => d.Department).ToListAsync());
-            viewModel.CourseInstructors = courses;
+            foreach (var instructor in viewModel.Instructors)
+            {
+                instructor.Courses = _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id)
+                    .Select(c => c.Course).Include(d => d.Department).ToList();
+            }
+            
             return View(viewModel);
+        }
+
+        public JsonResult LoadData()
+        {
+            try
+            {
+                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+                // Skiping number of Rows count  
+                var start = Request.Form["start"].FirstOrDefault();
+                // Paging Length 10,20  
+                var length = Request.Form["length"].FirstOrDefault();
+                // Sort Column Name  
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                // Sort Column Direction ( asc ,desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                // Search Value from (Search box)  
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+                //Paging Size (10,20,50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                // Getting all Customer data  
+                
+
+                var instructorData = (from tempInstructor in _context.Instructors select tempInstructor);
+                var viewModel = new InstructorIndexData();
+                var instructors = _context.Instructors.OrderBy(i => i.Surname).ToList();
+                viewModel.Instructors = instructors;
+                foreach (var instructor in instructors)
+                {
+                    foreach (var course in _context.CourseInstructors.Where(ci => ci.InstructorId == instructor.Id)
+                        .Select(c => c.Course).ToList())
+                    {
+                        instructor.CoursesList = instructor.CoursesList +
+                                                 string.Format("{0} -{1}", course.Title, course.Department.Name);
+                    }
+                    
+                    //string s = string.Empty;
+                    //instructor.CoursesList = "test";    
+                }
+
+                ////Sorting  
+                //if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                //{
+                //    instructorData = instructorData.OrderBy(sortColumn + " " + sortColumnDirection);
+                //}
+                ////Search  
+                //if (!string.IsNullOrEmpty(searchValue))
+                //{
+                //    instructorData = instructorData.Where(m => m.FirstName == searchValue);
+                //}
+
+                //total number of rows count   
+                recordsTotal = instructors.Count;
+                
+                //Paging   
+                var data = instructors.Skip(skip).Take(pageSize).ToList();
+                //Returning Json Data 
+
+                //return Json(data);
+                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal,
+                    data = data});
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         public async Task<IActionResult> Create()

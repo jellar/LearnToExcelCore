@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearnToExcel.Core.Models
 {
@@ -17,6 +18,12 @@ namespace LearnToExcel.Core.Models
         public bool Active { get; set; }
 
         public DateTime EndDate { get; set; }
+
+        [NotMapped]
+        public ICollection<Course> Courses { get; set; }
+
+        [NotMapped]
+        public string CoursesList { get; set; }
 
     }
 }

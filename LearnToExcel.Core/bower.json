@@ -10,6 +10,10 @@
     "bootstrap-datepicker": "v1.7.1",
     "bootstrap-daterangepicker": "v2.1.25",
     "jquery-ui": "1.12.1",
-    "select2": "4.0.6-rc.0"
+    "select2": "4.0.6-rc.0",
+    "DataTables": "RELEASE_1_9_4"
+  },
+  "resolutions": {
+    "jquery": ">=1.7.0"
   }
 }

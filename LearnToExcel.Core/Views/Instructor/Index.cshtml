@@ -15,7 +15,7 @@
                 
             </p>
             
-            <table class="table table-bordered">
+            @*<table class="table table-bordered">
                 <tr>
                     <th>Id</th>
                     <th>Surname</th>
@@ -42,10 +42,10 @@
                         <td>@item.Email</td>
                         <td>
                             @{
-                                foreach (var course in Model.CourseInstructors.Where(i => i.InstructorId == item.Id))
+                                foreach (var course in item.Courses)
                                 {
                                     @course.CourseId
-                                    @: @course.Course.Title - @course.Course.Department.Name <br/>
+                                    @: @course.Title - @course.Department.Name <br/>
                                 }
                             }
                         </td>
@@ -77,6 +77,21 @@
                     </tr>
                 }
 
+            </table>*@
+            
+            <table id="example" class="table table-bordered table-striped nowrap">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Surname</th>
+                    <th>First Name</th>
+                    <th>Start Date</th>
+                    <th>Email</th>
+                    <th>Courses</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
             </table>
         </div>
     </div>
@@ -87,5 +102,75 @@
     <script>
         $('#confirm-delete').on('show.bs.modal', function(e) {         
         });
+
+        $('#example').dataTable({  
+            "processing": true, // for show progress bar  
+            "serverSide": true, // for process server side  
+            "filter": true, // this is for disable filter (search box)  
+            "orderMulti": false, // for disable multiple column at once  
+            "ajax": {  
+                "url": "/Instructor/LoadData",  
+                "type": "POST",  
+                "datatype": "json",
+                //"contentType": "application/json"
+            },  
+            "columnDefs":  
+            [{  
+                "targets": [0],  
+                "visible": false,  
+                "searchable": false  
+            }],  
+            "columns": [  
+                { "data": "id", "name": "Id", "autoWidth": true },
+                { "data": "firstName", "name": "FirstName", "autoWidth": true},  
+                { "data": "surname", "name": "Surname", "autoWidth": true },  
+                { "data": "hireDate", "name": "StartDate", "autoWidth": true },  
+                { "data": "email", "name": "Email", "autoWidth": true },
+
+                { "data": "coursesList", "name": "Courses", "autoWidth": true },
+
+                {  
+                    "render": function (data, type, full, meta)  
+                    { return '<a class="btn btn-info" href="/Instructor/Edit/' + full.Id + '">Edit</a>'; }  
+                },  
+                {  
+                    data: null, render: function (data, type, row)  
+                    {  
+                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.Id + "'); >Delete</a>";  
+                    }  
+                }
+            ]  
+        }); 
+
+        function DeleteData(id)  
+        {  
+            if (confirm("Are you sure you want to delete ...?"))  
+            {  
+                Delete(id);  
+            }  
+            else  
+            {  
+                return false;  
+            }  
+        }  
+  
+  
+        function Delete(id)  
+        {  
+            var url = '@Url.Content("~/")' + "Instructor/Delete";  
+  
+            $.post(url, { id: id }, function (data)  
+            {  
+                if (data)  
+                {  
+                    oTable = $('#example').DataTable();  
+                    oTable.draw();  
+                }  
+                else  
+                {  
+                    alert("Something Went Wrong!");  
+                }  
+            });  
+        }  
     </script>
 }
