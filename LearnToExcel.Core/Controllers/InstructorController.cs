@@ -60,8 +60,13 @@ namespace LearnToExcel.Core.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int recordsTotal = 0;
 
+                string filterName = Request.Form["firstname"].FirstOrDefault();
+                string filterSurName = Request.Form["surname"].FirstOrDefault();
                 // Getting all Customer data  
-                var instructors = _context.Instructors.OrderBy(i => i.Surname).AsQueryable();
+                var instructors = _context.Instructors
+                    .Where( m => (m.FirstName.Contains(filterName) || string.IsNullOrEmpty(filterName)) 
+                    && (m.Surname.Contains(filterSurName) || string.IsNullOrEmpty(filterSurName)))
+                                                         .OrderBy(i => i.Surname).AsQueryable();
                 
                 foreach (var instructor in instructors)
                 {
@@ -76,7 +81,7 @@ namespace LearnToExcel.Core.Controllers
                 }
 
                 ////Sorting  
-                //if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
                     instructors = instructors.OrderBy(sortColumn + " " + sortColumnDirection);
                 }
