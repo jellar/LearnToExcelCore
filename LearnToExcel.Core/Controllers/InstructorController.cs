@@ -226,18 +226,17 @@ namespace LearnToExcel.Core.Controllers
             await _context.SaveChangesAsync();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]        
         public async Task<IActionResult> Delete(int id)
         {
             Instructor instructor = await _context.Instructors.Where(i => i.Id == id).SingleAsync();
             if (instructor == null)
             {
-                return BadRequest();
+                return Json(new { message = "Error" });
             }
             _context.Instructors.Remove(instructor);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { message = "OK" });
         }
     }
 }
