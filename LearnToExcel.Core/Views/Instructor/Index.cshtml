@@ -114,7 +114,25 @@
                 </tr>
                 </thead>
             </table>
-        </div>
+
+            <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog modal-open" role="document">                    
+                    <div class="modal-content">
+                        <input id="instructorId" type="hidden" />
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete <span id="delete-description"></span> ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" id="btn-confirm-delete" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>                  
+                </div>
+            </div>
     </div>
     
    
@@ -155,7 +173,7 @@
             "columnDefs":  
             [{  
                 "targets": [0],  
-                "visible": false,  
+                "visible": true,  
                 "searchable": false  
             },{  
                 "targets": [5,6,7],
@@ -183,43 +201,38 @@
                 {  
                     data: null, render: function (data, type, row)  
                     {  
-                        return "<a href='#' class='btn btn-danger btn-sm' onclick=DeleteData('" + row.id + "'); >Delete</a>";  
+                        return "<a class='btn btn-danger btn-sm editor_remove' onclick=DeleteData('" + row.id + "'); >Delete</a>";  
                     }
                 }
             ]  
         }); 
-
+       
         function DeleteData(id)  
         {  
-            alert(id);
-            if (confirm("Are you sure you want to delete ...?"))  
-            {  
-                Delete(id);  
-            }  
-            else  
-            {  
-                return false;  
-            }  
+            $("#instructorId").val(id);
+            // $('#delete-description').text(name);
+            $('#confirm-delete').modal('show');           
         }  
   
-  
-        function Delete(id)  
-        {  
-            var url = '@Url.Content("~/")' + "Instructor/Delete";  
-  
-            $.post(url, { id: id }, function (data)  
-            {  
-                if (data)  
-                {  
-                    oTable = $('#example').DataTable();  
-                    oTable.draw();  
-                }  
-                else  
-                {  
-                    alert("Something Went Wrong!");  
-                }  
-            });  
-        }  
+        $('#btn-confirm-delete').click(function () {
+            var id = $("#instructorId").val();
+            if (id != '') {               
+                $.ajax({
+                    url: '/Instructor/Delete/'+ id,
+                    type: 'post',                  
+                    dataType: 'json',
+                    contentType: 'json',
+                    success: function (data) {
+                        refDataTable.fnDraw();
+                        $('#confirm-delete').modal('hide');
+                    }, error: function (err) {
+
+                        console.log(err);
+                    }
+                })
+            }
+
+        })        
 
         $("#filterBtn").click(function () {
             filterValues.firstname = $("#filterFirstName").val();
