@@ -1,0 +1,52 @@
+﻿@model LearnToExcel.Core.Models.AccountViewModels.RegisterViewModel
+
+@{
+    ViewBag.Title = "Create Account";
+}
+<section class="content-header">
+    <h1>Create Account</h1>
+    <br />
+    <form method="post" asp-controller="Manage" asp-action="Create">
+        <div class="box box-primary">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" asp-for="Email"></label>
+                        <div class="col-sm-5">
+                            <input type="email" class="form-control" placeholder="Email" asp-for="Email">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" asp-for="Password"></label>
+                        <div class="col-sm-5">
+                            <input type="password" class="form-control" placeholder="Password" asp-for="Password">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" asp-for="ConfirmPassword"></label>
+                        <div class="col-sm-5">
+                            <input type="password" class="form-control" placeholder="Confirm Password" asp-for="ConfirmPassword">
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+           
+            </div>
+            <div class="box-footer">
+                <div class="btn-box-tool pull-right">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

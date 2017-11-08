@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Users";
+}
+<section class="content-header">
+    <h1>Users</h1>
+    <br /> 
+    <div class="box box-primary">
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="users" class="table table-bordered table-striped nowrap">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Surname</th>
+                    <th>Username</th>
+                    <th></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script>
+        var filterValues = {};
+
+        var refDataTable = $('#users').dataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": false, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "lengthChange": false,
+            ajax: function(data, callback, settings) {
+                filterValues.draw = data.draw;
+                filterValues.start = data.start;
+                filterValues.length = data.length;
+                filterValues.columns = data.columns;
+                filterValues.order = data.order;
+                $.ajax({
+                    url: '/Manage/LoadUsers',
+                    method: 'POST',
+                    data: filterValues,
+                    dataType: 'JSON'
+                }).done(callback);
+            },
+            "columnDefs":
+            [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                },
+                {  
+                    "targets": [4],
+                    "orderable": false,
+                    "searchable": false  
+                }
+            ],
+            "columns": [
+                { "data": "id", "name": "id", "autoWidth": true },
+                { "data": "firstName", "name": "FirstName", "autoWidth": true },
+                { "data": "surname", "name": "Surname", "autoWidth": true },
+                { "data": "email", "name": "Email", "autoWidth": true },
+                {
+                    "render": function(data, type, full, meta) {
+                        if (full.email === null) {
+                            return '<a class="btn btn-primary btn-sm" href="/Manage/Create/' + full.id + '">Create</a>';
+                        } else {
+                            return '<a class="btn btn-default btn-sm" href="/Manage/ChangePassword/' + full.id + '">Change Password</a>';
+                        }
+                    }
+                }
+            ]
+        });
+    </script>
+}
