@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using NToastNotify;
 
 namespace LearnToExcel.Core
 {
@@ -51,7 +52,12 @@ namespace LearnToExcel.Core
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;                
             });
-            
+
+            services.AddNToastNotify(new ToastOption()
+            {
+                ProgressBar = false,
+                PositionClass = ToastPositions.TopRight
+            });
             services.AddMvc()
                  .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             
